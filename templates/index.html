@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyFlix</title>
+    <link rel="stylesheet" href="css/Styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .movie-container {
+                background-color: #f9f9f9;
+                padding: 10px;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+        }
+
+        .movie {
+            width: calc(50% - 20px);
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie img {
+            max-width: 100%;
+            height: auto;
+        }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MyFlix</h1>
+    </header>
+    <nav>
+        <a href="#" onclick="showContent('Home')">Home</a>
+        <a href="#" onclick="showContent('Movies')">Movies</a>
+        <a href="#" onclick="showContent('TV Shows')">TV Shows</a>
+        <a href="#" onclick="showContent('Contact')">Contact</a>
+</nav>
+
+<main>
+    <div id="home-content">
+        <!-- Home content goes here -->
+    </div>
+
+    <div id="movies-content" style="display: none;">
+        <h1>Videos</h1>
+        <div class="movie-container">
+            {% for video in videos %}
+            <div class="movie">
+                <h2>{{ video[1] }}</h2> <!-- title -->
+                <p>{{ video[2] }}</p> <!-- description -->
+                <video width="320" height="240" controls>
+                        <source src="{{ video[5] }}" type="video/mp4"> <!-- s3_url -->
+                        Your browser does not support the video tag.
+                </video>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="tvshows-content">
+        <!-- TV shows content goes here -->
+        
+    </div>
+
+    <div id="contact-content">
+        <!-- Contact content goes here -->
+        
+    </div>
+</main>
+
+<script>
+    function showContent(content) {
+        document.getElementById("home-content").style.display = "none";
+        document.getElementById("movies-content").style.display = "none";
+        document.getElementById("tvshows-content").style.display = "none";
+        document.getElementById("contact-content").style.display = "none";
+
+        if (content === "Home") {
+            document.getElementById("home-content").style.display = "block";
+        } else if (content === "Movies") {
+            document.getElementById("movies-content").style.display = "block";
+        } else if (content === "TV Shows") {
+            document.getElementById("tvshows-content").style.display = "block";
+        } else if (content === "Contact") {
+            document.getElementById("contact-content").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
