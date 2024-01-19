@@ -2,18 +2,15 @@ pipeline {
     agent any
 
     environment {
-        // Define environment variables
-        DOCKERHUB_USERNAME = 'Jhika'
-        DOCKERHUB_PASSWORD = 'Hika 32146'
-        IMAGE_TAG = 'Jhika/front-app' // Change as needed
-        REPOSITORY_NAME = 'jhika/login'
-         DOCKERFILE_NAME = 'frontdockerfile'
+        // Use Jenkins credentials and bind them to environment variables
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-login') // Assuming 'docker-hub-credentials' is the ID of your credentials in Jenkins
+        IMAGE_TAG = 'latest' // Change as needed
+        REPOSITORY_NAME = 'jhika/login' // Adjust the repository name as needed
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Check out source code from GitHub
                 checkout scm
             }
         }
@@ -21,8 +18,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    // Build Docker image
-                    sh 'docker build -t jhika/login:jhika/front-app .')
+                    sh "docker build -t ${REPOSITORY_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
@@ -30,10 +26,10 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    // Login to Docker Hub
-                    sh "docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}"
-                    // Push the image
-                    docker.push("${DOCKERHUB_USERNAME}/${REPOSITORY_NAME}:${IMAGE_TAG}")
+                    withEnv(["DOCKERHUB_USERNAME=${DOCKERHUB_CREDENTIALS_USR}", "DOCKERHUB_PASSWORD=${DOCKERHUB_CREDENTIALS_PSW}"]) {
+                        sh "echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin"
+                        sh "docker push ${REPOSITORY_NAME}:${IMAGE_TAG}"
+                    }
                 }
             }
         }
@@ -41,7 +37,6 @@ pipeline {
 
     post {
         always {
-            // Logout from Docker Hub to secure the credentials
             sh "docker logout"
         }
     }
